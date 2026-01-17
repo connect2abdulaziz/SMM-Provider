@@ -3,20 +3,20 @@
 
 :root {
   /* ================================================
-     MAIN BRAND COLORS
+     MAIN BRAND COLORS - DARK PURPLE THEME
      ================================================ */
 
-  /* Background */
-  --color-bg: #000c4c;
-  --color-bg-rgb: 0, 12, 76;
+  /* Background - Deep dark purple/black */
+  --color-bg: #1A0C2B;
+  --color-bg-rgb: 255 255 255;
 
-  /* Primary brand */
-  --color-primary: #051a85;
-  --color-primary-rgb: 5, 26, 133;
+  /* Primary - Dark purple for containers/buttons */
+  --color-primary: #2D1B4E;
+  --color-primary-rgb: 45, 27, 78;
 
-  /* Accent */
-  --color-secondary: #fbb414;
-  --color-secondary-rgb: 251, 180, 20;
+  /* Accent - Purple glow/shadow accent */
+  --color-secondary: #8B5CF6;
+  --color-secondary-rgb: 139, 92, 246;
 
   /* Text */
   --color-text: #ffffff;
@@ -99,5 +99,19 @@ body {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 3s infinite;
 }
 

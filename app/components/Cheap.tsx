@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function Benefits() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -10,42 +11,42 @@ export default function Benefits() {
     {
       title: 'Amazing Quality Guarantee',
       description: 'Our commitment to amazing quality is unwavering. With PAK Panel, you can trust that every service we provide is of the highest standard, ensuring exceptional results every time.',
-      icon: '🏆',
+      image: '/Cheap/best-quality.png',
     },
     {
       title: 'Competitive Prices',
       description: 'Enjoy competitive prices without compromising on quality. We believe in offering the best value for your money, making our services accessible to businesses and individuals alike.',
-      icon: '💰',
+      image: '/Cheap/competitive-pricing.jpg',
     },
     {
       title: 'High-Quality Engagements',
       description: 'Experience high-quality engagements that drive real results. From likes and followers to comments and shares, we deliver engagements that make a real impact on your social media presence.',
-      icon: '✨',
+      image: '/Cheap/engagment.webp',
     },
     {
       title: 'Wide Range of Services',
       description: 'With us, you can access a wide range of services tailored to meet your needs. Whether you want to increase your followers, boost engagement, or drive conversions, we\'ve got you covered.',
-      icon: '🎯',
+      image: '/Cheap/wide-range-services.jpg',
     },
     {
       title: 'User-Friendly Platform',
       description: 'Our platform is designed to be user-friendly and intuitive, making it easy for you to navigate and use our services to achieve your goals. Managing your social media presence has never been easier.',
-      icon: '💻',
+      image: '/Cheap/user-friendly.png',
     },
     {
       title: '100% Organic SMM Service',
       description: 'We pride ourselves on offering 100% organic SMM services that adhere to the highest standards of integrity and authenticity. You can trust that your social media growth is genuine and sustainable.',
-      icon: '🌱',
+      image: '/Cheap/100-organic-SMM.png',
     },
     {
       title: 'Cost Effectiveness',
       description: 'Maximize your ROI with our cost-effective solutions. Our services are designed to deliver maximum impact at minimal cost, ensuring that you get the most out of your investment.',
-      icon: '📊',
+      image: '/Cheap/cost-effectiveness1.png',
     },
     {
       title: '24/7 Customer Support',
       description: 'Need assistance? Our dedicated customer support team is available 24/7 to help you with any questions or concerns you may have. We\'re here to ensure that your experience with PAK Panel is nothing short of exceptional.',
-      icon: '🛟',
+      image: '/Cheap/24-7.jpg',
     },
   ];
 
@@ -111,9 +112,15 @@ export default function Benefits() {
                   style={{ width: `${100 / itemsToShow}%` }}
                 >
                   <div className="bg-foreground rounded-xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 h-full">
-                    {/* Icon/Image Placeholder */}
-                    <div className="w-full h-40 md:h-48 mb-6 bg-primary/10 rounded-lg flex items-center justify-center">
-                      <span className="text-5xl md:text-6xl lg:text-7xl">{benefit.icon}</span>
+                    {/* Image */}
+                    <div className="w-full h-40 md:h-48 mb-6 bg-primary/10 rounded-lg overflow-hidden relative">
+                      <Image
+                        src={benefit.image}
+                        alt={benefit.title}
+                        fill
+                        className="object-contain"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
                     </div>
 
                     {/* Title */}

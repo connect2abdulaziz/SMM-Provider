@@ -1,62 +1,141 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect, useRef } from 'react';
+import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
+
+// Animated Number Component
+const AnimatedNumber = ({ value, duration = 2000 }: { value: string; duration?: number }) => {
+  const [displayValue, setDisplayValue] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const elementRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasAnimated) {
+            setHasAnimated(true);
+            
+            // Extract numeric value (remove commas, dollar signs, etc.)
+            const numericValue = parseInt(value.replace(/[^0-9]/g, ''), 10);
+            
+            if (isNaN(numericValue)) {
+              setDisplayValue(0);
+              return;
+            }
+
+            const startTime = Date.now();
+            const startValue = 0;
+            const endValue = numericValue;
+
+            const animate = () => {
+              const now = Date.now();
+              const elapsed = now - startTime;
+              const progress = Math.min(elapsed / duration, 1);
+
+              // Easing function for smooth animation
+              const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+              const currentValue = Math.floor(startValue + (endValue - startValue) * easeOutQuart);
+
+              setDisplayValue(currentValue);
+
+              if (progress < 1) {
+                requestAnimationFrame(animate);
+              } else {
+                setDisplayValue(endValue);
+              }
+            };
+
+            requestAnimationFrame(animate);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    if (elementRef.current) {
+      observer.observe(elementRef.current);
+    }
+
+    return () => {
+      if (elementRef.current) {
+        observer.unobserve(elementRef.current);
+      }
+    };
+  }, [value, duration, hasAnimated]);
+
+  // Format the number with commas (same format as original)
+  const formattedValue = displayValue.toLocaleString('en-US');
+  
+  return (
+    <span ref={elementRef}>
+      {formattedValue}
+    </span>
+  );
+};
 
 export default function Stats() {
   const stats = [
     {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-      ),
-      number: '10,394',
-      label: 'Total active users'
+      title: 'Total Active Users',
+      currentValue: '10,394',
+      previousValue: '9,873',
+      change: 3.72,
+      isPositive: true,
     },
     {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-        </svg>
-      ),
-      number: '4,035',
-      label: 'Total services'
+      title: 'Total Services',
+      currentValue: '4,035',
+      previousValue: '3,856',
+      change: 2.15,
+      isPositive: true,
     },
     {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-      ),
-      number: '10,485',
-      label: 'Total users'
+      title: 'Total Users',
+      currentValue: '10,485',
+      previousValue: '10,120',
+      change: 1.88,
+      isPositive: true,
     },
     {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-        </svg>
-      ),
-      number: '183,071',
-      label: 'Total orders'
+      title: 'Total Orders',
+      currentValue: '183,071',
+      previousValue: '203,253',
+      change: -5.21,
+      isPositive: false,
     },
     {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-      number: '148,891',
-      label: 'Total completed orders'
+      title: 'Completed Orders',
+      currentValue: '148,891',
+      previousValue: '142,356',
+      change: 2.95,
+      isPositive: true,
     },
     {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-      ),
-      number: '6,559',
-      label: 'Total tickets'
-    }
+      title: 'Total Tickets',
+      currentValue: '6,559',
+      previousValue: '6,823',
+      change: -1.52,
+      isPositive: false,
+    },
   ];
+
+  // Simple trend graph SVG component
+  const TrendGraph = ({ isPositive }: { isPositive: boolean }) => (
+    <svg width="60" height="30" viewBox="0 0 60 30" className="flex-shrink-0">
+      <polyline
+        points={isPositive 
+          ? "5,25 15,20 25,15 35,10 45,8 55,5"
+          : "5,5 15,8 25,12 35,18 45,22 55,25"
+        }
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 
   return (
     <section className="w-full bg-background py-12 md:py-16 lg:py-20">
@@ -71,28 +150,48 @@ export default function Stats() {
           </p>
         </div>
 
-        {/* Stats Grid - Centered */}
+        {/* Stats Cards Grid - 3 columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="bg-secondary rounded-xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-secondary/20"
+              className="bg-primary/80 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/10 shadow-lg hover:shadow-[0_20px_50px_rgba(139,92,246,0.4)] hover:shadow-secondary/50 transition-all duration-300 hover:scale-[1.03] hover:border-secondary/60 hover:bg-primary/60 hover:backdrop-blur-md cursor-pointer group relative overflow-hidden"
             >
-              <div className="flex flex-col items-center text-center gap-4">
-                {/* Icon */}
-                <div className="text-background flex-shrink-0">
-                  {stat.icon}
+              {/* Glow effect on hover */}
+              <div className="absolute inset-0 bg-gradient-to-br from-secondary/0 via-secondary/0 to-secondary/0 group-hover:from-secondary/10 group-hover:via-secondary/5 group-hover:to-secondary/10 transition-all duration-300 pointer-events-none rounded-2xl" />
+              
+              <div className="relative z-10">
+                {/* Header Row - Title and Change Indicator */}
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg md:text-xl font-semibold text-foreground  transition-colors duration-300">
+                  {stat.title}
+                </h3>
+                <div className={`flex items-center gap-1 transition-transform duration-300 group-hover:scale-110 ${stat.isPositive ? 'text-green-400' : 'text-red-400'}`}>
+                  {stat.isPositive ? (
+                    <FaArrowUp className="w-4 h-4" />
+                  ) : (
+                    <FaArrowDown className="w-4 h-4" />
+                  )}
+                  <span className="text-sm md:text-base font-semibold">
+                    {Math.abs(stat.change)}%
+                  </span>
                 </div>
-                
-                {/* Number and Label */}
-                <div className="flex-1 w-full">
-                  <div className="text-4xl md:text-5xl lg:text-6xl font-bold text-background mb-3">
-                    {stat.number}
-                  </div>
-                  <div className="text-base md:text-lg text-background/90 font-bold">
-                    {stat.label}
-                  </div>
+              </div>
+
+              {/* Previous Value Row with Trend Graph */}
+              <div className="flex items-center justify-between mb-6">
+                <span className="text-sm md:text-base text-foreground/70 group-hover:text-foreground/90 transition-colors duration-300">
+                  {stat.previousValue}
+                </span>
+                <div className="text-foreground/50 group-hover:text-foreground/70 transition-colors duration-300">
+                  <TrendGraph isPositive={stat.isPositive} />
                 </div>
+              </div>
+
+              {/* Current Value - Large and Bold with Animation */}
+              <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground group-hover:text-secondary transition-colors duration-300">
+                <AnimatedNumber value={stat.currentValue} duration={2000} />
+              </div>
               </div>
             </div>
           ))}

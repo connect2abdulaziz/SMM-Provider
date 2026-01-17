@@ -1,110 +1,102 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
+import { FaServer, FaEnvelope, FaQuestionCircle, FaBars, FaTimes } from 'react-icons/fa';
 
 export default function Header() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
-    <header className="bg-primary w-full sticky top-0 z-[1000] shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
-      <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 py-4 flex items-center justify-between gap-4 md:gap-6 lg:gap-8 flex-wrap">
-        {/* Logo Section */}
-        <div className="flex items-center gap-3 shrink-0">
-          <div className="flex items-center justify-center shrink-0">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 md:w-10 md:h-10">
-              <circle cx="20" cy="20" r="18" stroke="#FF8C00" strokeWidth="2" fill="none"/>
-              <path d="M 12 20 A 8 8 0 0 1 20 12" stroke="white" strokeWidth="2" fill="none"/>
-              <circle cx="16" cy="18" r="2" fill="#FFD700"/>
-            </svg>
-          </div>
-          <div className="flex items-baseline gap-1 font-semibold text-lg md:text-xl leading-none">
-            <span className="text-secondary font-bold">PAK</span>
-            <span className="text-foreground font-medium">Panel</span>
-          </div>
+    <header className="bg-primary/95 backdrop-blur-md w-full sticky top-0 z-[1000] shadow-[0_4px_12px_rgba(0,0,0,0.15)] border-b border-white/10">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 py-3 md:py-4">
+        <div className="flex items-center justify-between gap-4 md:gap-6 lg:gap-8">
+          {/* Logo Section */}
+          <a href="/" className="flex items-center gap-3 shrink-0 group">
+            <div className="flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-secondary to-secondary/70 flex items-center justify-center shadow-lg shadow-secondary/30 group-hover:shadow-secondary/50 transition-all duration-300 group-hover:scale-110">
+                <span className="text-foreground font-bold text-lg md:text-xl">P</span>
+              </div>
+            </div>
+            <div className="flex items-baseline gap-1 font-semibold text-lg md:text-xl leading-none">
+              <span className="text-secondary font-bold group-hover:text-secondary/90 transition-colors">PAK</span>
+              <span className="text-foreground font-medium">Panel</span>
+            </div>
+          </a>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+            <a 
+              href="/services" 
+              className="flex items-center gap-2 px-4 lg:px-5 py-2.5 text-foreground no-underline rounded-lg text-sm lg:text-base font-medium whitespace-nowrap hover:bg-white/10 hover:text-secondary transition-all duration-200 group relative"
+            >
+              <FaServer className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
+              <span>Services</span>
+            </a>
+            
+            <a 
+              href="#contact" 
+              className="flex items-center gap-2 px-4 lg:px-5 py-2.5 text-foreground no-underline rounded-lg text-sm lg:text-base font-medium whitespace-nowrap hover:bg-white/10 hover:text-secondary transition-all duration-200 group relative"
+            >
+              <FaEnvelope className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
+              <span>Contact Us</span>
+            </a>
+            
+            {/* <a 
+              href="#faq" 
+              className="flex items-center gap-2 px-4 lg:px-5 py-2.5 text-foreground no-underline rounded-lg text-sm lg:text-base font-medium whitespace-nowrap hover:bg-white/10 hover:text-secondary transition-all duration-200 group relative"
+            >
+              <FaQuestionCircle className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
+              <span>FAQ</span>
+            </a> */}
+          </nav>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg text-foreground hover:bg-white/10 transition-all duration-200"
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? (
+              <FaTimes className="w-5 h-5" />
+            ) : (
+              <FaBars className="w-5 h-5" />
+            )}
+          </button>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex items-center gap-2 flex-wrap justify-end lg:justify-end w-full lg:w-auto overflow-x-auto lg:overflow-visible scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0">
-          {/* <a 
-            href="#" 
-            className="flex items-center gap-2 px-3 md:px-4 lg:px-5 py-2 md:py-2.5 text-foreground no-underline rounded-lg text-sm md:text-[0.9375rem] font-medium whitespace-nowrap bg-secondary hover:bg-[rgba(251,180,20,0.8)] hover:-translate-y-0.5 hover:shadow-[0_4px_8px_rgba(251,180,20,0.3)] transition-all duration-200"
-          >
-            <svg className="shrink-0 w-4 h-4" width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <circle cx="8" cy="6" r="3" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-              <path d="M 3 14 Q 3 10 8 10 Q 13 10 13 14" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-              <path d="M 10 6 L 11 5 M 11 5 L 12 4 M 11 5 L 12 6" stroke="currentColor" strokeWidth="1" fill="none"/>
-            </svg>
-            <span className="hidden md:inline">Sign in</span>
-          </a> */}
-          
-          <a 
-            href="/services" 
-            className="flex items-center gap-2 px-2 md:px-3 lg:px-4 py-2 text-foreground no-underline rounded-lg text-xs md:text-sm lg:text-[0.9375rem] font-normal whitespace-nowrap hover:bg-white/10 transition-all duration-200"
-          >
-            <svg className="shrink-0 w-4 h-4" width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <rect x="2" y="4" width="4" height="8" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-              <rect x="6" y="2" width="4" height="10" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-              <rect x="10" y="5" width="4" height="7" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-            </svg>
-            <span className="hidden md:inline">Services</span>
-          </a>
-          
-          <a 
-            href="#" 
-            className="flex items-center gap-2 px-2 md:px-3 lg:px-4 py-2 text-foreground no-underline rounded-lg text-xs md:text-sm lg:text-[0.9375rem] font-normal whitespace-nowrap hover:bg-white/10 transition-all duration-200"
-          >
-            <svg className="shrink-0 w-4 h-4" width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <rect x="3" y="3" width="10" height="10" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-              <path d="M 6 6 L 10 6" stroke="currentColor" strokeWidth="1.5"/>
-              <path d="M 6 8 L 10 8" stroke="currentColor" strokeWidth="1.5"/>
-              <path d="M 6 10 L 8 10" stroke="currentColor" strokeWidth="1.5"/>
-            </svg>
-            <span className="hidden md:inline">Blog</span>
-          </a>
-          
-          <a 
-            href="#" 
-            className="flex items-center gap-2 px-2 md:px-3 lg:px-4 py-2 text-foreground no-underline rounded-lg text-xs md:text-sm lg:text-[0.9375rem] font-normal whitespace-nowrap hover:bg-white/10 transition-all duration-200"
-          >
-            <svg className="shrink-0 w-4 h-4" width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M 3 3 L 6 6 M 6 6 L 3 9 M 6 6 L 13 6" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-              <circle cx="13" cy="6" r="2" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-            </svg>
-            <span className="hidden md:inline">Contact Us</span>
-          </a>
-          
-          <a 
-            href="#" 
-            className="flex items-center gap-2 px-2 md:px-3 lg:px-4 py-2 text-foreground no-underline rounded-lg text-xs md:text-sm lg:text-[0.9375rem] font-normal whitespace-nowrap hover:bg-white/10 transition-all duration-200"
-          >
-            <svg className="shrink-0 w-4 h-4" width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-              <path d="M 8 5 L 8 8 L 10 10" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-            </svg>
-            <span className="hidden md:inline">FAQ</span>
-          </a>
-          
-          <a 
-            href="#" 
-            className="flex items-center gap-2 px-2 md:px-3 lg:px-4 py-2 text-foreground no-underline rounded-lg text-xs md:text-sm lg:text-[0.9375rem] font-normal whitespace-nowrap hover:bg-white/10 transition-all duration-200"
-          >
-            <svg className="shrink-0 w-4 h-4" width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <rect x="2" y="4" width="5" height="5" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-              <rect x="9" y="7" width="5" height="5" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-              <path d="M 7 6.5 L 9 6.5" stroke="currentColor" strokeWidth="1.5"/>
-              <path d="M 7 8.5 L 9 8.5" stroke="currentColor" strokeWidth="1.5"/>
-            </svg>
-            <span className="hidden md:inline">API</span>
-          </a>
-          
-          {/* <a 
-            href="#" 
-            className="flex items-center gap-2 px-2 md:px-3 lg:px-4 py-2 text-foreground no-underline rounded-lg text-xs md:text-sm lg:text-[0.9375rem] font-normal whitespace-nowrap hover:bg-white/10 transition-all duration-200"
-          >
-            <svg className="shrink-0 w-4 h-4" width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <circle cx="8" cy="6" r="3" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-              <path d="M 3 14 Q 3 10 8 10 Q 13 10 13 14" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-              <rect x="10" y="3" width="4" height="3" rx="0.5" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-            </svg>
-            <span className="hidden md:inline">Sign up</span>
-          </a> */}
-        </nav>
+        {/* Mobile Navigation */}
+        {isMobileMenuOpen && (
+          <nav className="md:hidden mt-4 pb-4 border-t border-white/10 pt-4">
+            <div className="flex flex-col gap-2">
+              <a 
+                href="/services" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 text-foreground no-underline rounded-lg text-base font-medium hover:bg-white/10 hover:text-secondary transition-all duration-200"
+              >
+                <FaServer className="w-5 h-5" />
+                <span>Services</span>
+              </a>
+              
+              <a 
+                href="#contact" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 text-foreground no-underline rounded-lg text-base font-medium hover:bg-white/10 hover:text-secondary transition-all duration-200"
+              >
+                <FaEnvelope className="w-5 h-5" />
+                <span>Contact Us</span>
+              </a>
+              
+              <a 
+                href="#faq" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 text-foreground no-underline rounded-lg text-base font-medium hover:bg-white/10 hover:text-secondary transition-all duration-200"
+              >
+                <FaQuestionCircle className="w-5 h-5" />
+                <span>FAQ</span>
+              </a>
+            </div>
+          </nav>
+        )}
       </div>
     </header>
   );
