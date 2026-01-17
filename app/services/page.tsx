@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { 
@@ -27,7 +29,12 @@ import {
   FaLink,
   FaChevronDown,
   FaPlay,
-  FaGem
+  FaGem,
+  FaTimes,
+  FaUser,
+  FaEnvelope,
+  FaBuilding,
+  FaFileAlt
 } from 'react-icons/fa';
 
 interface Service {
@@ -51,8 +58,20 @@ export default function ServicesPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    company: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const currencyRef = useRef<HTMLDivElement>(null);
   const categoryRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -68,6 +87,20 @@ export default function ServicesPage() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Close modal on Escape key
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isModalOpen) {
+        setIsModalOpen(false);
+        setSelectedService(null);
+        setFormData({ name: '', email: '', company: '', subject: '', message: '' });
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isModalOpen]);
 
   const platforms = [
     { name: 'Instagram', icon: FaInstagram, color: 'text-pink-500' },
@@ -1193,11 +1226,20 @@ const realInstagramServices: Service[] = [
 
                         {/* Action Buttons */}
                         <div className="flex gap-3">
-                          <button className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-foreground rounded-xl font-bold text-sm md:text-base transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/30 flex items-center justify-center gap-2 group/btn">
+                          <button 
+                            onClick={() => window.open('https://calendly.com/cypentra-consultation/30min', '_blank')}
+                            className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-foreground rounded-xl font-bold text-sm md:text-base transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/30 flex items-center justify-center gap-2 group/btn"
+                          >
                             <FaInfoCircle className="w-4 h-4 group-hover/btn:rotate-180 transition-transform duration-300" />
                             <span>Details</span>
                           </button>
-                          <button className="flex-1 px-4 py-3 bg-gradient-to-r from-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary text-background rounded-xl font-bold text-sm md:text-base transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-secondary/40 flex items-center justify-center gap-2 group/btn">
+                          <button 
+                            onClick={() => {
+                              setSelectedService(service);
+                              setIsModalOpen(true);
+                            }}
+                            className="flex-1 px-4 py-3 bg-gradient-to-r from-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary text-background rounded-xl font-bold text-sm md:text-base transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-secondary/40 flex items-center justify-center gap-2 group/btn"
+                          >
                             <FaLink className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
                             <span>Buy Now</span>
                           </button>
@@ -1213,6 +1255,247 @@ const realInstagramServices: Service[] = [
       </main>
 
       <Footer />
+
+      {/* Contact Form Modal */}
+      {isModalOpen && (
+        <div 
+          ref={modalRef}
+          className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsModalOpen(false);
+              setSelectedService(null);
+              setFormData({ name: '', email: '', company: '', subject: '', message: '' });
+            }
+          }}
+        >
+          <div className="bg-primary rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-white/10 relative">
+            {/* Close Button */}
+            <button
+              onClick={() => {
+                setIsModalOpen(false);
+                setSelectedService(null);
+                setFormData({ name: '', email: '', company: '', subject: '', message: '' });
+              }}
+              className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 text-foreground transition-all duration-200 hover:scale-110"
+              aria-label="Close modal"
+            >
+              <FaTimes className="w-5 h-5" />
+            </button>
+
+            {/* Modal Content */}
+            <div className="p-6 md:p-8">
+              {/* Header */}
+              <div className="mb-6">
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3 text-center">
+                  Order Service
+                </h2>
+                {/* {selectedService && (
+                  <div className="bg-primary/50 rounded-lg p-4 border border-white/10">
+                    <p className="text-sm md:text-base text-foreground/90 leading-relaxed">
+                      {selectedService.description}
+                    </p>
+                  </div>
+                )} */}
+              </div>
+
+              {/* Form */}
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setIsSubmitting(true);
+                  setSubmitError('');
+
+                  try {
+                    if (!selectedService) {
+                      throw new Error('Service information is missing');
+                    }
+
+                    const orderData = {
+                      ...formData,
+                      serviceId: selectedService.id,
+                      serviceDescription: selectedService.description,
+                      servicePrice: selectedService.price,
+                      serviceCategory: selectedService.category,
+                      platform: selectedPlatform
+                    };
+
+                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+                    const response = await fetch(`${apiUrl}/api/smm-orders`, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify(orderData),
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                      throw new Error(data.message || 'Failed to submit order');
+                    }
+
+                    // Success
+                    toast.success('Thank you! Your order request has been submitted successfully.', {
+                      position: 'top-right',
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                    });
+                    setIsModalOpen(false);
+                    setSelectedService(null);
+                    setFormData({ name: '', email: '', company: '', subject: '', message: '' });
+                  } catch (error: any) {
+                    console.error('Order submission error:', error);
+                    const errorMessage = error.message || 'Failed to submit order. Please try again.';
+                    setSubmitError(errorMessage);
+                    toast.error(errorMessage, {
+                      position: 'top-right',
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                    });
+                  } finally {
+                    setIsSubmitting(false);
+                  }
+                }}
+                className="space-y-5"
+              >
+                {/* Name and Email Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Name Field */}
+                  <div className="group">
+                    <label htmlFor="name" className="block text-sm font-semibold text-foreground mb-2 group-hover:text-secondary transition-colors">
+                      {/* <FaUser className="inline w-4 h-4 mr-2 text-secondary" /> */}
+                      Name *
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg bg-primary/50 border border-white/20 text-foreground placeholder-foreground/50 focus:outline-none focus:border-secondary focus:bg-primary/70 hover:border-secondary/50 hover:bg-primary/60 transition-all duration-300 shadow-sm hover:shadow-md focus:shadow-lg focus:shadow-secondary/20"
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+
+                  {/* Email Field */}
+                  <div className="group">
+                    <label htmlFor="email" className="block text-sm font-semibold text-foreground mb-2 group-hover:text-secondary transition-colors">
+                      {/* <FaEnvelope className="inline w-4 h-4 mr-2 text-secondary" /> */}
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg bg-primary/50 border border-white/20 text-foreground placeholder-foreground/50 focus:outline-none focus:border-secondary focus:bg-primary/70 hover:border-secondary/50 hover:bg-primary/60 transition-all duration-300 shadow-sm hover:shadow-md focus:shadow-lg focus:shadow-secondary/20"
+                      placeholder="Enter your email address"
+                    />
+                  </div>
+                </div>
+
+                {/* Company and Subject Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Company Field */}
+                  <div className="group">
+                    <label htmlFor="company" className="block text-sm font-semibold text-foreground mb-2 group-hover:text-secondary transition-colors">
+                      {/* <FaBuilding className="inline w-4 h-4 mr-2 text-secondary" /> */}
+                      Company
+                    </label>
+                    <input
+                      type="text"
+                      id="company"
+                      value={formData.company}
+                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg bg-primary/50 border border-white/20 text-foreground placeholder-foreground/50 focus:outline-none focus:border-secondary focus:bg-primary/70 hover:border-secondary/50 hover:bg-primary/60 transition-all duration-300 shadow-sm hover:shadow-md focus:shadow-lg focus:shadow-secondary/20"
+                      placeholder="Enter your company name"
+                    />
+                  </div>
+
+                  {/* Subject Field */}
+                  <div className="group">
+                    <label htmlFor="subject" className="block text-sm font-semibold text-foreground mb-2 group-hover:text-secondary transition-colors">
+                      {/* <FaFileAlt className="inline w-4 h-4 mr-2 text-secondary" /> */}
+                      Subject *
+                    </label>
+                    <input
+                      type="text"
+                      id="subject"
+                      required
+                      value={formData.subject}
+                      onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg bg-primary/50 border border-white/20 text-foreground placeholder-foreground/50 focus:outline-none focus:border-secondary focus:bg-primary/70 hover:border-secondary/50 hover:bg-primary/60 transition-all duration-300 shadow-sm hover:shadow-md focus:shadow-lg focus:shadow-secondary/20"
+                      placeholder="Enter subject"
+                    />
+                  </div>
+                </div>
+
+                {/* Message Field */}
+                <div className="group">
+                  <label htmlFor="message" className="block text-sm font-semibold text-foreground mb-2 group-hover:text-secondary transition-colors">
+                    {/* <FaFileAlt className="inline w-4 h-4 mr-2 text-secondary" /> */}
+                    Message *
+                  </label>
+                  <textarea
+                    id="message"
+                    required
+                    rows={5}
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg bg-primary/50 border border-white/20 text-foreground placeholder-foreground/50 focus:outline-none focus:border-secondary focus:bg-primary/70 hover:border-secondary/50 hover:bg-primary/60 transition-all duration-300 shadow-sm hover:shadow-md focus:shadow-lg focus:shadow-secondary/20 resize-none"
+                    placeholder="Enter your message or order details"
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <div className="flex gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      setSelectedService(null);
+                      setFormData({ name: '', email: '', company: '', subject: '', message: '' });
+                    }}
+                    className="flex-1 px-6 py-3 bg-primary/50 hover:bg-primary/70 text-foreground rounded-xl font-semibold transition-all duration-200 border border-white/20"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 px-6 py-3 bg-gradient-to-r from-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary text-background rounded-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-secondary/40 flex items-center justify-center gap-2"
+                  >
+                    <FaEnvelope className="w-4 h-4" />
+                    Submit Order
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        style={{
+          zIndex: 9999,
+        }}
+      />
     </div>
   );
 }
