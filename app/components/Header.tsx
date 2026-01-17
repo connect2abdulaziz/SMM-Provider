@@ -33,13 +33,13 @@ export default function Header() {
               <span>Services</span>
             </a>
             
-            <a 
+            {/* <a 
               href="#contact" 
               className="flex items-center gap-2 px-4 lg:px-5 py-2.5 text-foreground no-underline rounded-lg text-sm lg:text-base font-medium whitespace-nowrap hover:bg-white/10 hover:text-secondary transition-all duration-200 group relative"
             >
               <FaEnvelope className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
               <span>Contact Us</span>
-            </a>
+            </a> */}
             
             {/* <a 
               href="#faq" 
